@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 FRC 6854 - Viking Robotics
+Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
 
 This file is part of RobotLog.
 
@@ -17,14 +17,12 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "robotlog.hpp"
 #include <gtkmm.h>
+
+#include "robotlog.hpp"
 
 int main() {
 	auto app = Gtk::Application::create();
 	RobotLog robotlog;
-	robotlog.set_default_size(1646, 823 + 100);
-	robotlog.set_resizable(false);
-	robotlog.set_title("RobotLog");
 	app->run(robotlog);
 }

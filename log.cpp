@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 FRC 6854 - Viking Robotics
+Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
 
 This file is part of RobotLog.
 
@@ -18,8 +18,6 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "robotlog.hpp"
-
-using namespace std;
 
 void RobotLog::start_button_clicked() {
 	playing = true;
@@ -40,7 +38,8 @@ void RobotLog::reset_button_clicked() {
 // 20ms timer timeout event
 bool RobotLog::on_timeout() {
 	// update time label
-	label_time.set_text("Time: " + to_string(playtime / 50) + ":" + to_string(playtime % 50 * 20));
+	label_time.set_text("Time: " + std::to_string(playtime / 50) + ":" +
+						std::to_string(playtime % 50 * 20));
 	field_area.queue_draw(); // drawing
 	return true;
 }

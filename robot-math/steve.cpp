@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 FRC 6854 - Viking Robotics
+Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
 
 This file is part of RobotLog.
 
@@ -17,11 +17,10 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "../robotlog.hpp"
 #include <fstream>
 #include <iostream>
 
-using namespace std;
+#include "../robotlog.hpp"
 
 #define ANGLEDEEP 5.4
 #define SPEEDFACTOR 8
@@ -32,9 +31,9 @@ void RobotLog::make_path(double robot_x, double robot_y, double hdg,
 	int len;
 	int path_line = 0;
 
-	ifstream path_file(path_file_filename);
+	std::ifstream path_file(path_file_filename);
 	if (!path_file.is_open()) {
-		cout << "path file open error\n";
+		std::cout << "path file open error\n";
 		exit(2);
 	}
 	while (path_file >> left_wheel >> right_wheel) {

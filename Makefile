@@ -1,15 +1,14 @@
-CPPSRC = main.cpp robotlog.cpp plan.cpp log.cpp
+CPPSRC = main.cpp robotlog.cpp plan.cpp log.cpp robot-math/steve.cpp
+CXX = g++
+CXXFLAGS = -O2 -g
 
 all: robotlog
 
-robotlog:
-	g++ $(CPPSRC) robot-math/steve.cpp -o robotlog `pkg-config gtkmm-3.0 --cflags --libs`
+robotlog: $(CPPSRC)
+	$(CXX) $(CPPSRC) $(CXXFLAGS) -o robotlog `pkg-config gtkmm-3.0 --cflags --libs`
 
-clang:
-	clang++ $(CPPSRC) robot-math/steve.cpp -o robotlog `pkg-config gtkmm-3.0 --cflags --libs`
-
-win:
-	g++ $(CPPSRC) robot-math/steve.cpp -o robotlog `pkg-config gtkmm-3.0 --cflags --libs` -mwindows
+win: $(CPPSRC)
+	$(CXX) $(CPPSRC) $(CXXFLAGS) -o robotlog `pkg-config gtkmm-3.0 --cflags --libs` -mwindows
 
 run: robotlog
 	./robotlog

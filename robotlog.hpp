@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 FRC 6854 - Viking Robotics
+Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
 
 This file is part of RobotLog.
 
@@ -22,8 +22,6 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <gtkmm.h>
 
-enum OpMode { planning, logview };
-
 struct point {
 	double x, y;
 };
@@ -31,7 +29,7 @@ struct point {
 double deg2rad(double deg);
 
 class RobotLog : public Gtk::Window {
-  public:
+public:
 	RobotLog();
 	void make_path(double robot_x, double robot_y, double hdg, std::string path_file_filename);
 
@@ -44,12 +42,14 @@ class RobotLog : public Gtk::Window {
 	double robot_path_x[10000];
 	double robot_path_y[10000];
 	double robot_path_hdg[10000];
-	OpMode op_mode = planning;
 	point path_point[100];
 	int path_pointer = 0;
 	double log_start_x, log_start_y, log_start_hdg;
 
-  protected:
+protected:
+	enum class OpMode { planning, logview };
+	OpMode op_mode = OpMode::planning;
+
 	// signals
 	void start_button_clicked();
 	void pause_button_clicked();
@@ -60,12 +60,12 @@ class RobotLog : public Gtk::Window {
 	void deploy_button_clicked();
 	void startup_changed();
 	bool on_timeout();
-	bool field_area_ondraw(const ::Cairo::RefPtr<::Cairo::Context> &cr);
+	bool field_area_ondraw(const ::Cairo::RefPtr<::Cairo::Context>& cr);
 	void choose_path_file();
 	void display_about_dialog();
 	void mode_changed();
-	void export_path(std::string filename);
-	bool field_clicked(GdkEventButton *button_event);
+	void export_path(const std::string& filename);
+	bool field_clicked(GdkEventButton* button_event);
 
 	Glib::RefPtr<Gdk::Pixbuf> field_background_image;
 	Glib::RefPtr<Gtk::FileFilter> csv_filter;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 FRC 6854 - Viking Robotics
+Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
 
 This file is part of RobotLog.
 
@@ -17,12 +17,11 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "robotlog.hpp"
 #include <fstream>
 #include <gtkmm.h>
 #include <iostream>
 
-using namespace std;
+#include "robotlog.hpp"
 
 // degrees to radians
 double deg2rad(double deg) {
@@ -31,6 +30,10 @@ double deg2rad(double deg) {
 
 // initialize the window
 RobotLog::RobotLog() {
+	// window properties
+	set_default_size(1646, 823 + 100);
+	set_resizable(false);
+	set_title("RobotLog");
 	// load background image
 	field_background_image = Gdk::Pixbuf::create_from_file("res/frc-field-2019.jpg");
 	// get drawing area ready
@@ -79,7 +82,7 @@ RobotLog::RobotLog() {
 	choose_pathfile.add_filter(csv_filter);
 	choose_pathfile.signal_file_set().connect(sigc::mem_fun(*this, &RobotLog::choose_path_file));
 	// about dialog
-	vector<Glib::ustring> authors;
+	std::vector<Glib::ustring> authors;
 	authors.push_back("Jason Xu");
 	about_dialog.set_program_name("RobotLog");
 	about_dialog.set_version("alpha");
@@ -88,7 +91,7 @@ RobotLog::RobotLog() {
 	about_dialog.set_website_label("FRC6854");
 	about_dialog.set_website("https://team6854.com");
 	about_dialog.set_license_type(Gtk::LICENSE_GPL_3_0);
-	about_dialog.set_copyright("Copyright (c) 2019 FRC 6854 - Viking Robotics");
+	about_dialog.set_copyright("Copyright (c) 2019-2021 FRC 6854 - Viking Robotics");
 	// mode selection combobox
 	combobox_mode_select.append("Planning Mode");
 	combobox_mode_select.append("Log Viewing Mode");
@@ -167,7 +170,7 @@ void RobotLog::startup_changed() {
 }
 
 // drawing field area
-bool RobotLog::field_area_ondraw(const ::Cairo::RefPtr<::Cairo::Context> &cr) {
+bool RobotLog::field_area_ondraw(const ::Cairo::RefPtr<::Cairo::Context>& cr) {
 	// draw background
 	Gdk::Cairo::set_source_pixbuf(cr, field_background_image, 0, 0);
 	cr->paint();
