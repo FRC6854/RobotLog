@@ -1,20 +1,20 @@
 /*
-Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
+  Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
 
-This file is part of RobotLog.
+  This file is part of RobotLog.
 
-RobotLog is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+  RobotLog is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-RobotLog is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+  RobotLog is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <fstream>
@@ -31,13 +31,14 @@ double deg2rad(double deg) {
 // initialize the window
 RobotLog::RobotLog() {
 	// window properties
-	set_default_size(1646, 823 + 100);
+	set_default_size(1456, 684 + 100);
 	set_resizable(false);
 	set_title("RobotLog");
 	// load background image
-	field_background_image = Gdk::Pixbuf::create_from_file("res/frc-field-2019.jpg");
+	Glib::RefPtr<Gdk::Pixbuf> tmp_pixbuf = Gdk::Pixbuf::create_from_file("res/2021-field.png");
+	field_background_image = tmp_pixbuf->scale_simple(1456, 684, Gdk::InterpType::INTERP_BILINEAR);
 	// get drawing area ready
-	field_area.set_size_request(1646, 823);
+	field_area.set_size_request(1456, 684);
 	RobotLog::signal_button_press_event().connect(sigc::mem_fun(*this, &RobotLog::field_clicked));
 	field_area.signal_draw().connect(sigc::mem_fun(*this, &RobotLog::field_area_ondraw));
 	// start button
@@ -97,20 +98,29 @@ RobotLog::RobotLog() {
 	combobox_mode_select.append("Log Viewing Mode");
 	combobox_mode_select.signal_changed().connect(sigc::mem_fun(*this, &RobotLog::mode_changed));
 	combobox_mode_select.set_active(0);
+	// background selection combobox
+	combobox_background_select.append("2018");
+	combobox_background_select.append("2019");
+	combobox_background_select.append("2020");
+	combobox_background_select.append("2021");
+	combobox_background_select.signal_changed().connect(
+		sigc::mem_fun(*this, &RobotLog::background_select_changed));
+	combobox_background_select.set_active(0);
 	// add all widget to window
 	box.put(field_area, 0, 0);
-	box.put(button_start, 10, 840);
-	box.put(button_pause, 100, 840);
-	box.put(button_reset, 200, 840);
-	box.put(button_undo, 10, 840);
-	box.put(button_export, 100, 840);
-	box.put(button_gohome, 200, 840);
-	box.put(button_deploy, 450, 840);
-	box.put(combobox_startup, 300, 840);
-	box.put(label_time, 450, 840);
-	box.put(choose_pathfile, 600, 840);
-	box.put(button_about, 10, 880);
-	box.put(combobox_mode_select, 500, 880);
+	box.put(button_start, 10, 700);
+	box.put(button_pause, 100, 700);
+	box.put(button_reset, 200, 700);
+	box.put(button_undo, 10, 700);
+	box.put(button_export, 100, 700);
+	box.put(button_gohome, 200, 700);
+	box.put(button_deploy, 450, 700);
+	box.put(combobox_startup, 300, 700);
+	box.put(label_time, 450, 700);
+	box.put(choose_pathfile, 600, 700);
+	box.put(button_about, 10, 740);
+	box.put(combobox_mode_select, 500, 740);
+	box.put(combobox_background_select, 650, 700);
 	add(box);
 	show_all_children();
 	// start with planning mode
@@ -256,4 +266,24 @@ void RobotLog::mode_changed() {
 		button_deploy.hide();
 		break;
 	}
+}
+
+void RobotLog::background_select_changed() {
+	Glib::RefPtr<Gdk::Pixbuf> tmp_pixbuf;
+	switch (combobox_background_select.get_active_row_number()) {
+	case 0:
+		tmp_pixbuf = Gdk::Pixbuf::create_from_file("res/2018-field.jpg");
+		break;
+	case 1:
+		tmp_pixbuf = Gdk::Pixbuf::create_from_file("res/2019-field.jpg");
+		break;
+	case 2:
+		tmp_pixbuf = Gdk::Pixbuf::create_from_file("res/2020-field.png");
+		break;
+	case 3:
+		tmp_pixbuf = Gdk::Pixbuf::create_from_file("res/2021-field.png");
+		break;
+	}
+	field_background_image = tmp_pixbuf->scale_simple(1456, 684, Gdk::InterpType::INTERP_BILINEAR);
+	field_area.queue_draw();
 }

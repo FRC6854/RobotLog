@@ -64,6 +64,7 @@ protected:
 	void choose_path_file();
 	void display_about_dialog();
 	void mode_changed();
+	void background_select_changed();
 	void export_path(const std::string& filename);
 	bool field_clicked(GdkEventButton* button_event);
 
@@ -85,6 +86,7 @@ protected:
 	Gtk::FileChooserButton choose_pathfile;
 	Gtk::AboutDialog about_dialog;
 	Gtk::ComboBoxText combobox_mode_select;
+	Gtk::ComboBoxText combobox_background_select;
 };
 
 #endif // ROBOTLOG_HPP
