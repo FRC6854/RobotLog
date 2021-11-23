@@ -17,35 +17,32 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
 
+#include "pathreader.hpp"
 #include "robotlog.hpp"
 
-bool RobotLog::field_clicked(GdkEventButton* button_event) {
+bool RobotLog::field_clicked(GdkEventButton *button_event) {
 	if ((button_event->y < 60) || (button_event->y > 823 + 60)) {
 		return false;
 	}
 	if (op_mode == OpMode::logview) {
 		return true;
 	}
-	path_pointer++;
-	path_point[path_pointer].x = button_event->x - 30;
-	path_point[path_pointer].y = button_event->y - 60;
+	plan_path.push_back(PathPoint(button_event->x - 30, button_event->y - 60, 0));
 	field_area.queue_draw();
 	return true;
 }
 
 void RobotLog::undo_button_clicked() {
-	path_pointer--;
-	if (path_pointer < 0) {
-		path_pointer = 0;
-	}
+	plan_path.pop_back();
 }
 
 void RobotLog::export_button_clicked() {
-	auto choose_save =
-		Gtk::FileChooserNative::create("Save path CSV file", Gtk::FILE_CHOOSER_ACTION_SAVE);
+	auto choose_save
+		= Gtk::FileChooserNative::create("Save path CSV file", Gtk::FILE_CHOOSER_ACTION_SAVE);
 	choose_save->add_filter(csv_filter);
 	int choose_save_result = choose_save->run();
 	std::string out_filename;
@@ -60,9 +57,7 @@ void RobotLog::export_button_clicked() {
 }
 
 void RobotLog::gohome_button_clicked() {
-	path_pointer++;
-	path_point[path_pointer].x = log_start_x;
-	path_point[path_pointer].y = log_start_y;
+	plan_path.push_back(PathPoint(log_start_x, log_start_y, 0));
 	field_area.queue_draw();
 }
 
@@ -98,11 +93,12 @@ void RobotLog::deploy_button_clicked() {
 
 void RobotLog::export_path(const std::string& filename) {
 	std::ofstream outcsv(filename);
-	for (int i = 0; i <= path_pointer; i++) {
+	for (const PathPoint& pp : plan_path) {
+		assert((log_start_hdg == 0) || (log_start_hdg == 180));
 		if (log_start_hdg == 0) {
-			outcsv << path_point[i].x - log_start_x << "," << path_point[i].y - log_start_y << "\n";
+			outcsv << pp.x - log_start_x << ',' << pp.y - log_start_y << '\n';
 		} else if (log_start_hdg == 180) {
-			outcsv << log_start_x - path_point[i].x << "," << log_start_y - path_point[i].y << "\n";
+			outcsv << log_start_x - pp.x << ',' << log_start_y - pp.y << '\n';
 		}
 	}
 	outcsv.close();

@@ -17,16 +17,13 @@
   along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <cassert>
 #include <fstream>
 #include <gtkmm.h>
 #include <iostream>
 
+#include "pathreader.hpp"
 #include "robotlog.hpp"
-
-// degrees to radians
-double deg2rad(double deg) {
-	return deg * M_PI / 180.0;
-}
 
 // initialize the window
 RobotLog::RobotLog() {
@@ -109,18 +106,18 @@ RobotLog::RobotLog() {
 	// add all widget to window
 	box.put(field_area, 0, 0);
 	box.put(button_start, 10, 700);
-	box.put(button_pause, 100, 700);
+	box.put(button_pause, 120, 700);
 	box.put(button_reset, 200, 700);
 	box.put(button_undo, 10, 700);
 	box.put(button_export, 100, 700);
 	box.put(button_gohome, 200, 700);
 	box.put(button_deploy, 450, 700);
 	box.put(combobox_startup, 300, 700);
-	box.put(label_time, 450, 700);
-	box.put(choose_pathfile, 600, 700);
+	box.put(label_time, 450, 710);
+	box.put(choose_pathfile, 700, 700);
 	box.put(button_about, 10, 740);
 	box.put(combobox_mode_select, 500, 740);
-	box.put(combobox_background_select, 650, 700);
+	box.put(combobox_background_select, 600, 700);
 	add(box);
 	show_all_children();
 	// start with planning mode
@@ -130,8 +127,7 @@ RobotLog::RobotLog() {
 	label_time.hide();
 	choose_pathfile.hide();
 	// path startup point
-	path_point[0].x = 60;
-	path_point[0].y = 315;
+	plan_path.push_back(PathPoint(60, 315, 0));
 	// 20ms timeout timer
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &RobotLog::on_timeout), 20);
 }
@@ -145,36 +141,46 @@ void RobotLog::startup_changed() {
 		log_start_x = 60;
 		log_start_y = 315;
 		log_start_hdg = 0;
-		path_point[0].x = 60;
-		path_point[0].y = 315;
+		if (!plan_path.empty()) {
+			plan_path[0].x = 60;
+			plan_path[0].y = 315;
+		}
 		break;
 	case 1:
 		// blue 3
 		log_start_x = 60;
 		log_start_y = 505;
 		log_start_hdg = 0;
-		path_point[0].x = 60;
-		path_point[0].y = 505;
+		if (!plan_path.empty()) {
+			plan_path[0].x = 60;
+			plan_path[0].y = 505;
+		}
 		break;
 	case 2:
 		// red 1
 		log_start_x = 1580;
 		log_start_y = 315;
 		log_start_hdg = 180;
-		path_point[0].x = 1580;
-		path_point[0].y = 315;
+		if (!plan_path.empty()) {
+			plan_path[0].x = 1580;
+			plan_path[0].y = 315;
+		}
 		break;
 	case 3:
 		// red 3
 		log_start_x = 1580;
 		log_start_y = 505;
 		log_start_hdg = 180;
-		path_point[0].x = 1580;
-		path_point[0].y = 505;
+		if (!plan_path.empty()) {
+			plan_path[0].x = 1580;
+			plan_path[0].y = 505;
+		}
 		break;
 	}
 	if (!choose_pathfile.get_filename().empty()) {
-		make_path(log_start_x, log_start_y, log_start_hdg, path_file_path);
+		StevePathReader steve_path_reader;
+		log_path
+			= steve_path_reader.read_path(path_file_path, log_start_x, log_start_y, log_start_hdg);
 	}
 	field_area.queue_draw();
 }
@@ -186,12 +192,12 @@ bool RobotLog::field_area_ondraw(const ::Cairo::RefPtr<::Cairo::Context>& cr) {
 	cr->paint();
 	// draw planning lines
 	if (op_mode == OpMode::planning) {
-		if (path_pointer > 0) {
+		if (plan_path.size() > 1) {
 			cr->set_source_rgb(0.8, 0.0, 0.0);
 			cr->set_line_width(10);
-			for (int i = 0; i < path_pointer; i++) {
-				cr->move_to(path_point[i].x, path_point[i].y);
-				cr->line_to(path_point[i + 1].x, path_point[i + 1].y);
+			for (unsigned int i = 0; i < plan_path.size() - 1; i++) {
+				cr->move_to(plan_path[i].x, plan_path[i].y);
+				cr->line_to(plan_path[i + 1].x, plan_path[i + 1].y);
 				cr->stroke();
 			}
 		}
@@ -205,20 +211,19 @@ bool RobotLog::field_area_ondraw(const ::Cairo::RefPtr<::Cairo::Context>& cr) {
 	cr->set_source_rgb(0.8, 0.0, 0.0);
 	cr->set_line_width(10);
 	// draw path
-	for (int i = 0; i < robot_data_size - 1; i++) {
+	for (unsigned int i = 0; i < log_path.size() - 1; i++) {
 		if (i == playtime) {
-			cr->stroke(); // draw passed path
-			// change style of new path
+			cr->stroke();
 			cr->set_source_rgb(0.0, 0.8, 0.0);
 		}
-		cr->move_to(robot_path_x[i], robot_path_y[i]);
-		cr->line_to(robot_path_x[i + 1], robot_path_y[i + 1]);
+		cr->move_to(log_path[i].x, log_path[i].y);
+		cr->line_to(log_path[i + 1].x, log_path[i + 1].y);
 	}
 	cr->stroke();
 	// draw robot
 	cr->set_source_rgb(0.0, 0.0, 0.5);
-	cr->translate(robot_path_x[playtime], robot_path_y[playtime]);
-	cr->rotate_degrees(robot_path_hdg[playtime]);
+	cr->translate(log_path[playtime].x, log_path[playtime].y);
+	cr->rotate_degrees(log_path[playtime].hdg);
 	cr->rectangle(-35, -30, 70, 60);
 	cr->fill();
 	// only update playtime when playing, not pausing
@@ -226,7 +231,7 @@ bool RobotLog::field_area_ondraw(const ::Cairo::RefPtr<::Cairo::Context>& cr) {
 		playtime++;
 	}
 	// reset after finished playing
-	if (playtime == robot_data_size) {
+	if (playtime == log_path.size()) {
 		playing = false;
 		playtime = 0;
 	}

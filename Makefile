@@ -1,17 +1,17 @@
-CPPSRC = main.cpp robotlog.cpp plan.cpp log.cpp robot-math/steve.cpp
+OBJS = main.o robotlog.o plan.o log.o robot-math/steve.o
 CXX = g++
-CXXFLAGS = -O2 -g
+CXXFLAGS = -Og -g -std=c++20 `pkg-config gtkmm-3.0 --cflags` -Wall
 
 all: robotlog
 
-robotlog: $(CPPSRC)
-	$(CXX) $(CPPSRC) $(CXXFLAGS) -o robotlog `pkg-config gtkmm-3.0 --cflags --libs`
+robotlog: $(OBJS)
+	$(CXX) $(OBJS) -o robotlog `pkg-config gtkmm-3.0 --libs`
 
 win: $(CPPSRC)
-	$(CXX) $(CPPSRC) $(CXXFLAGS) -o robotlog `pkg-config gtkmm-3.0 --cflags --libs` -mwindows
+	$(CXX) $(OBJS) -o robotlog `pkg-config gtkmm-3.0 --libs` -mwindows
 
 run: robotlog
 	./robotlog
 
 clean:
-	rm -f robotlog
+	rm -f robotlog $(OBJS)

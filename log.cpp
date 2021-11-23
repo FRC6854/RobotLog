@@ -38,8 +38,8 @@ void RobotLog::reset_button_clicked() {
 // 20ms timer timeout event
 bool RobotLog::on_timeout() {
 	// update time label
-	label_time.set_text("Time: " + std::to_string(playtime / 50) + ":" +
-						std::to_string(playtime % 50 * 20));
+	label_time.set_text("Time: " + std::to_string(playtime / 50) + ":"
+						+ std::to_string(playtime % 50 * 20));
 	field_area.queue_draw(); // drawing
 	return true;
 }

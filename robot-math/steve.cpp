@@ -17,26 +17,33 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <cmath>
 #include <fstream>
 #include <iostream>
 
-#include "../robotlog.hpp"
+#include "../pathreader.hpp"
 
 #define ANGLEDEEP 5.4
 #define SPEEDFACTOR 8
 
-void RobotLog::make_path(double robot_x, double robot_y, double hdg,
-						 std::string path_file_filename) {
+std::vector<PathPoint> StevePathReader::read_path(const std::string& path_file_filename,
+												  double init_x, double init_y, double init_hdg) {
 	double left_wheel, right_wheel;
 	int len;
-	int path_line = 0;
+
+	double robot_x = init_x;
+	double robot_y = init_y;
+	double hdg = init_hdg;
+
+	std::vector<PathPoint> path;
 
 	std::ifstream path_file(path_file_filename);
 	if (!path_file.is_open()) {
 		std::cout << "path file open error\n";
 		exit(2);
 	}
-	while (path_file >> left_wheel >> right_wheel) {
+	char comma;
+	while (path_file >> left_wheel >> comma >> right_wheel) {
 		hdg += (left_wheel - right_wheel) * ANGLEDEEP;
 		len = (left_wheel + right_wheel) / 2 * SPEEDFACTOR;
 		if (hdg < 0) {
@@ -58,11 +65,8 @@ void RobotLog::make_path(double robot_x, double robot_y, double hdg,
 			robot_x += cos(deg2rad(360 - hdg)) * len;
 			robot_y -= sin(deg2rad(360 - hdg)) * len;
 		}
-		robot_path_x[path_line] = robot_x;
-		robot_path_y[path_line] = robot_y;
-		robot_path_hdg[path_line] = hdg;
-		path_line++;
+		path.push_back(PathPoint(robot_x, robot_y, hdg));
 	}
 	path_file.close();
-	robot_data_size = path_line;
+	return path;
 }

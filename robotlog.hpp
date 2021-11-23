@@ -21,33 +21,30 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #define ROBOTLOG_HPP
 
 #include <gtkmm.h>
+#include <vector>
 
-struct point {
-	double x, y;
-};
-
-double deg2rad(double deg);
+#include "pathreader.hpp"
 
 class RobotLog : public Gtk::Window {
 public:
 	RobotLog();
-	void make_path(double robot_x, double robot_y, double hdg, std::string path_file_filename);
 
 	std::string path_file_path;
 	std::string robot_ip;
 	bool path_ready = false;
 	bool playing = false;
-	int playtime = 0;
-	int robot_data_size;
-	double robot_path_x[10000];
-	double robot_path_y[10000];
-	double robot_path_hdg[10000];
-	point path_point[100];
-	int path_pointer = 0;
+	unsigned int playtime = 0;
 	double log_start_x, log_start_y, log_start_hdg;
 
 protected:
-	enum class OpMode { planning, logview };
+	std::vector<PathPoint> log_path;
+	std::vector<PathPoint> plan_path;
+
+	enum class OpMode
+	{
+		planning,
+		logview
+	};
 	OpMode op_mode = OpMode::planning;
 
 	// signals
@@ -66,7 +63,7 @@ protected:
 	void mode_changed();
 	void background_select_changed();
 	void export_path(const std::string& filename);
-	bool field_clicked(GdkEventButton* button_event);
+	bool field_clicked(GdkEventButton *button_event);
 
 	Glib::RefPtr<Gdk::Pixbuf> field_background_image;
 	Glib::RefPtr<Gtk::FileFilter> csv_filter;

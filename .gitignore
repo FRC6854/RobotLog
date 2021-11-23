@@ -1,3 +1,4 @@
 robotlog
+*.o
 compile_commands.json
 .cache
