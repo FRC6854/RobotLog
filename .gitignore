@@ -1,4 +1,6 @@
 robotlog
+robotlog.exe
 *.o
 compile_commands.json
 .cache
+.vscode

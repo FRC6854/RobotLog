@@ -35,6 +35,9 @@ public:
 	bool playing = false;
 	unsigned int playtime = 0;
 	double log_start_x, log_start_y, log_start_hdg;
+	// GUI field area limit and displacement
+	double field_cursor_top_limit, field_cursor_bottom_limit;
+	double field_cursor_disp_x, field_cursor_disp_y;
 
 protected:
 	std::vector<PathPoint> log_path;

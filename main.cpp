@@ -17,12 +17,31 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <cstddef>
+#include <cstring>
 #include <gtkmm.h>
 
 #include "robotlog.hpp"
 
+const char *gdk_backends_need_cursor_fix[] = {"GdkX11Display", "GdkWin32Display"};
+
 int main() {
 	auto app = Gtk::Application::create();
 	RobotLog robotlog;
+	// check if GDK backend need cursor position fixup
+	for (size_t i = 0;
+		 i < (sizeof(gdk_backends_need_cursor_fix) / sizeof(gdk_backends_need_cursor_fix[0]));
+		 i++) {
+		if (strcmp(G_OBJECT_TYPE_NAME(robotlog.get_display()->gobj()),
+				   gdk_backends_need_cursor_fix[i])
+			== 0) {
+			// set cursor displayment and bound
+			robotlog.field_cursor_top_limit = 0;
+			robotlog.field_cursor_bottom_limit = 684;
+			robotlog.field_cursor_disp_x = 0;
+			robotlog.field_cursor_disp_y = 0;
+			break;
+		}
+	}
 	app->run(robotlog);
 }

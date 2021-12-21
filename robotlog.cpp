@@ -130,6 +130,11 @@ RobotLog::RobotLog() {
 	plan_path.push_back(PathPoint(60, 315, 0));
 	// 20ms timeout timer
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &RobotLog::on_timeout), 20);
+	// set field area click limit and displayment
+	field_cursor_top_limit = 60;
+	field_cursor_bottom_limit = 684 + 60;
+	field_cursor_disp_x = -25;
+	field_cursor_disp_y = -60;
 }
 
 // change startup location event

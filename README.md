@@ -3,10 +3,10 @@
 ## How to build
 
 ### Build dependencies on Debian/Ubuntu
-g++ make pkg-config libgtkmm-3.0-dev
+`g++ make pkg-config libgtkmm-3.0-dev`
 
 ### Build dependencies on Windows MSYS2
-mingw-w64-x86_64-gcc mingw-w64-pkg-config mingw-w64-x86_64-gtkmm3
+`make mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config mingw-w64-x86_64-gtkmm3`
 
 ### List of Makefile targets
 For build using g++ use `make all`  

@@ -25,13 +25,15 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include "robotlog.hpp"
 
 bool RobotLog::field_clicked(GdkEventButton *button_event) {
-	if ((button_event->y < 60) || (button_event->y > 823 + 60)) {
+	if ((button_event->y < field_cursor_top_limit)
+		|| (button_event->y >= field_cursor_bottom_limit)) {
 		return false;
 	}
 	if (op_mode == OpMode::logview) {
 		return true;
 	}
-	plan_path.push_back(PathPoint(button_event->x - 30, button_event->y - 60, 0));
+	plan_path.push_back(
+		PathPoint(button_event->x + field_cursor_disp_x, button_event->y + field_cursor_disp_y, 0));
 	field_area.queue_draw();
 	return true;
 }

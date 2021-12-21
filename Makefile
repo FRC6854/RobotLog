@@ -1,6 +1,6 @@
 OBJS = main.o robotlog.o plan.o log.o robot-math/steve.o
 CXX = g++
-CXXFLAGS = -Og -g -std=c++20 `pkg-config gtkmm-3.0 --cflags` -Wall
+CXXFLAGS = -Og -g -std=c++20 `pkg-config gtkmm-3.0 --cflags` -Wall -Wextra
 
 all: robotlog
 
