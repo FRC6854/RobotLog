@@ -21,6 +21,8 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <iostream>
 
+#include "csvexport.hpp"
+#include "pathexport.hpp"
 #include "pathreader.hpp"
 #include "robotlog.hpp"
 
@@ -94,14 +96,14 @@ void RobotLog::deploy_button_clicked() {
 }
 
 void RobotLog::export_path(const std::string& filename) {
-	std::ofstream outcsv(filename);
+	CSVExport csv_export(filename);
 	for (const PathPoint& pp : plan_path) {
 		assert((log_start_hdg == 0) || (log_start_hdg == 180));
 		if (log_start_hdg == 0) {
-			outcsv << pp.x - log_start_x << ',' << pp.y - log_start_y << '\n';
+			csv_export.append(pp.x - log_start_x, pp.y - log_start_y);
 		} else if (log_start_hdg == 180) {
-			outcsv << log_start_x - pp.x << ',' << log_start_y - pp.y << '\n';
+			csv_export.append(log_start_x - pp.x, log_start_y - pp.y);
 		}
 	}
-	outcsv.close();
+	csv_export.close();
 }
