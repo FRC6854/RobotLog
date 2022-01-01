@@ -20,55 +20,55 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 
-#include "VikingInstructionOutput.hpp"
+#include "VikingInstructionExport.hpp"
 
-VikingInstructionOutput::VikingInstructionOutput() : opened(false) {}
+VikingInstructionExport::VikingInstructionExport() : opened(false) {}
 
-VikingInstructionOutput::VikingInstructionOutput(const char *filename) : ofs(filename) {
+VikingInstructionExport::VikingInstructionExport(const char *filename) : ofs(filename) {
 	opened = ofs.is_open();
 }
 
-VikingInstructionOutput::VikingInstructionOutput(const std::string& filename) : ofs(filename) {
+VikingInstructionExport::VikingInstructionExport(const std::string& filename) : ofs(filename) {
 	opened = ofs.is_open();
 }
 
-VikingInstructionOutput::~VikingInstructionOutput() {
+VikingInstructionExport::~VikingInstructionExport() {
 	if (opened) {
 		ofs.close();
 	}
 }
 
-void VikingInstructionOutput::open(const char *filename) {
+void VikingInstructionExport::open(const char *filename) {
 	if (!opened) {
 		ofs.open(filename);
 		opened = ofs.is_open();
 	}
 }
 
-void VikingInstructionOutput::open(const std::string& filename) {
+void VikingInstructionExport::open(const std::string& filename) {
 	if (!opened) {
 		ofs.open(filename);
 		opened = ofs.is_open();
 	}
 }
 
-void VikingInstructionOutput::close() {
+void VikingInstructionExport::close() {
 	if (opened) {
 		ofs.close();
 		opened = false;
 	}
 }
 
-void VikingInstructionOutput::append(double x, double y) {
+void VikingInstructionExport::append(double x, double y) {
 	if (opened) {
 		ofs << pastBadge << " translate " << x << " " << y << '\n';
 	}
 }
 
-const char *VikingInstructionOutput::get_type_name() {
-	return "VKG file";
+const char *VikingInstructionExport::get_type_name() {
+	return "Viking Instruction File";
 }
 
-const char *VikingInstructionOutput::get_file_ext() {
+const char *VikingInstructionExport::get_file_ext() {
 	return "vkg";
 }

@@ -17,15 +17,15 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef VIKINGINSTRUCTIONOUTPUT_HPP
-#define VIKINGINSTRUCTIONOUTPUT_HPP
+#ifndef VIKINGINSTRUCTIONEXPORT_HPP
+#define VIKINGINSTRUCTIONEXPORT_HPP
 
 #include <fstream>
 #include <string>
 
 #include "pathexport.hpp"
 
-class VikingInstructionOutput : public PathExport {
+class VikingInstructionExport : public PathExport {
 private:
 	std::ofstream ofs;
 	bool opened;
@@ -33,10 +33,10 @@ private:
 public:
 	const int pastBadge = 0;
 	char new_x, new_y;
-	VikingInstructionOutput();
-	VikingInstructionOutput(const char *filename);
-	VikingInstructionOutput(const std::string& filename);
-	~VikingInstructionOutput();
+	VikingInstructionExport();
+	VikingInstructionExport(const char *filename);
+	VikingInstructionExport(const std::string& filename);
+	~VikingInstructionExport();
 	virtual void open(const char *filename) override;
 	virtual void open(const std::string& filename) override;
 	virtual void close() override;

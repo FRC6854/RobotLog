@@ -21,7 +21,7 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <iostream>
 
-#include "VikingInstructionOutput.hpp"
+#include "VikingInstructionExport.hpp"
 #include "pathexport.hpp"
 #include "pathreader.hpp"
 #include "robotlog.hpp"
@@ -96,7 +96,7 @@ void RobotLog::deploy_button_clicked() {
 }
 
 void RobotLog::export_path(const std::string& filename) {
-	VikingInstructionOutput csv_export(filename);
+	VikingInstructionExport csv_export(filename);
 	for (const PathPoint& pp : plan_path) {
 		assert((log_start_hdg == 0) || (log_start_hdg == 180));
 		if (log_start_hdg == 0) {
