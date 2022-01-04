@@ -23,6 +23,7 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <gtkmm.h>
 #include <vector>
 
+#include "pathexport.hpp"
 #include "pathreader.hpp"
 
 class RobotLog : public Gtk::Window {
@@ -65,7 +66,7 @@ protected:
 	void display_about_dialog();
 	void mode_changed();
 	void background_select_changed();
-	void export_path(const std::string& filename);
+	void export_path(PathExport& exporter);
 	bool field_clicked(GdkEventButton *button_event);
 
 	Glib::RefPtr<Gdk::Pixbuf> field_background_image;

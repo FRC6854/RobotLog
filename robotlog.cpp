@@ -71,10 +71,11 @@ RobotLog::RobotLog() {
 	// about button
 	button_about.set_label("About");
 	button_about.signal_clicked().connect(sigc::mem_fun(*this, &RobotLog::display_about_dialog));
-	// csv filter for file dialog
+	// csv filter for replay sensor file dialog
 	csv_filter = Gtk::FileFilter::create();
-	csv_filter->set_name("CSV File");
+	csv_filter->set_name("CSV File (Replay sensor file)");
 	csv_filter->add_pattern("*.csv");
+	csv_filter->add_mime_type("test/csv");
 	// choose path file button
 	choose_pathfile.set_width_chars(30);
 	choose_pathfile.add_filter(csv_filter);

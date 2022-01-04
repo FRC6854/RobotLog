@@ -18,10 +18,12 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <cassert>
-#include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "VikingInstructionExport.hpp"
+#include "csvexport.hpp"
 #include "pathexport.hpp"
 #include "pathreader.hpp"
 #include "robotlog.hpp"
@@ -47,17 +49,36 @@ void RobotLog::undo_button_clicked() {
 void RobotLog::export_button_clicked() {
 	auto choose_save
 		= Gtk::FileChooserNative::create("Save path CSV file", Gtk::FILE_CHOOSER_ACTION_SAVE);
-	choose_save->add_filter(csv_filter);
-	int choose_save_result = choose_save->run();
-	std::string out_filename;
-	switch (choose_save_result) {
-	case Gtk::RESPONSE_ACCEPT:
-		out_filename = choose_save->get_filename();
-		break;
-	default:
-		return;
+
+	CSVExport csv_export;
+	VikingInstructionExport viking_export;
+	std::vector<Glib::RefPtr<Gtk::FileFilter>> export_file_filter;
+	export_file_filter.push_back(Gtk::FileFilter::create());
+	export_file_filter[0]->set_name(std::string(csv_export.get_type_name()) + " (*."
+									+ csv_export.get_file_ext() + ")");
+	export_file_filter[0]->add_pattern(std::string("*.") + csv_export.get_file_ext());
+	export_file_filter[0]->add_mime_type("text/csv");
+	export_file_filter.push_back(Gtk::FileFilter::create());
+	export_file_filter[1]->set_name(std::string(viking_export.get_type_name()) + " (*."
+									+ viking_export.get_file_ext() + ")");
+	export_file_filter[1]->add_pattern(std::string("*.") + viking_export.get_file_ext());
+	for (const Glib::RefPtr<Gtk::FileFilter>& ff : export_file_filter) {
+		choose_save->add_filter(ff);
 	}
-	export_path(out_filename);
+
+	int choose_save_result = choose_save->run();
+	if (choose_save_result == Gtk::RESPONSE_ACCEPT) {
+		std::string out_filename = choose_save->get_filename();
+		if (choose_save->get_filter() == export_file_filter[0]) {
+			csv_export.open(out_filename);
+			export_path(csv_export);
+			csv_export.close();
+		} else if (choose_save->get_filter() == export_file_filter[1]) {
+			viking_export.open(out_filename);
+			export_path(viking_export);
+			viking_export.close();
+		}
+	}
 }
 
 void RobotLog::gohome_button_clicked() {
@@ -81,7 +102,9 @@ void RobotLog::deploy_button_clicked() {
 	filename_dialog.run();
 	std::string robot_path_name = filename_box.get_text();
 	std::string tmp_path_name = Glib::get_tmp_dir() + "/" + robot_path_name;
-	export_path(tmp_path_name);
+	CSVExport csv_export(tmp_path_name);
+	export_path(csv_export);
+	csv_export.close();
 	int scp_status = system(
 		("scp -o ConnectTimeout=5 " + tmp_path_name + " lvuser@" + robot_ip + ":" + robot_path_name)
 			.c_str());
@@ -95,15 +118,13 @@ void RobotLog::deploy_button_clicked() {
 	std::remove(tmp_path_name.c_str());
 }
 
-void RobotLog::export_path(const std::string& filename) {
-	VikingInstructionExport csv_export(filename);
+void RobotLog::export_path(PathExport& exporter) {
 	for (const PathPoint& pp : plan_path) {
 		assert((log_start_hdg == 0) || (log_start_hdg == 180));
 		if (log_start_hdg == 0) {
-			csv_export.append(pp.x - log_start_x, pp.y - log_start_y);
+			exporter.append(pp.x - log_start_x, pp.y - log_start_y);
 		} else if (log_start_hdg == 180) {
-			csv_export.append(log_start_x - pp.x, log_start_y - pp.y);
+			exporter.append(log_start_x - pp.x, log_start_y - pp.y);
 		}
 	}
-	csv_export.close();
 }
