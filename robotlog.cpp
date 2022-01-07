@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2020-2021 FRC 6854 - Viking Robotics
+  Copyright (c) 2020-2022 FRC 6854 - Viking Robotics
 
   This file is part of RobotLog.
 
