@@ -101,9 +101,10 @@ RobotLog::RobotLog() {
 	combobox_background_select.append("2019");
 	combobox_background_select.append("2020");
 	combobox_background_select.append("2021");
+	combobox_background_select.append("2022");
 	combobox_background_select.signal_changed().connect(
 		sigc::mem_fun(*this, &RobotLog::background_select_changed));
-	combobox_background_select.set_active(0);
+	combobox_background_select.set_active(4);
 	// add all widget to window
 	box.put(field_area, 0, 0);
 	box.put(button_start, 10, 700);
@@ -293,6 +294,9 @@ void RobotLog::background_select_changed() {
 		break;
 	case 3:
 		tmp_pixbuf = Gdk::Pixbuf::create_from_file("res/2021-field.png");
+		break;
+	case 4:
+		tmp_pixbuf = Gdk::Pixbuf::create_from_file("res/2022-field.png");
 		break;
 	}
 	field_background_image = tmp_pixbuf->scale_simple(1456, 684, Gdk::InterpType::INTERP_BILINEAR);
