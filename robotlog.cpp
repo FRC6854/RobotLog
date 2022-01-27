@@ -83,14 +83,15 @@ RobotLog::RobotLog() {
 	// about dialog
 	std::vector<Glib::ustring> authors;
 	authors.push_back("Jason Xu");
+	authors.push_back("Omar El-Sawy");
 	about_dialog.set_program_name("RobotLog");
-	about_dialog.set_version("alpha");
-	about_dialog.set_comments("A simple FRC path planing tool");
+	about_dialog.set_version("2022-Alpha");
+	about_dialog.set_comments("A simple FRC path planing and replay tool");
 	about_dialog.set_authors(authors);
-	about_dialog.set_website_label("FRC6854");
+	about_dialog.set_website_label("FRC 6854 - Viking Robotics");
 	about_dialog.set_website("https://team6854.com");
 	about_dialog.set_license_type(Gtk::LICENSE_GPL_3_0);
-	about_dialog.set_copyright("Copyright (c) 2019-2021 FRC 6854 - Viking Robotics");
+	about_dialog.set_copyright("Copyright (c) 2020-2022 FRC 6854 - Viking Robotics");
 	// mode selection combobox
 	combobox_mode_select.append("Planning Mode");
 	combobox_mode_select.append("Log Viewing Mode");
