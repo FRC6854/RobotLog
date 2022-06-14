@@ -22,6 +22,7 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
+#include "SCPFileTransfer.hpp"
 #include "VikingInstructionExport.hpp"
 #include "csvexport.hpp"
 #include "pathexport.hpp"
@@ -105,9 +106,10 @@ void RobotLog::deploy_button_clicked() {
 	CSVExport csv_export(tmp_path_name);
 	export_path(csv_export);
 	csv_export.close();
-	int scp_status = system(
-		("scp -o ConnectTimeout=5 " + tmp_path_name + " lvuser@" + robot_ip + ":" + robot_path_name)
-			.c_str());
+
+	SCPFileTransfer scp_file_transfer(robot_ip, "lvuser");
+	int scp_status = scp_file_transfer.put(tmp_path_name, robot_path_name);
+
 	if (scp_status == 0) {
 		Gtk::MessageDialog success_dialog("Deploy successful to ~/" + robot_path_name);
 		success_dialog.run();
