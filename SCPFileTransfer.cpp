@@ -22,23 +22,26 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "SCPFileTransfer.hpp"
 
-SCPFileTransfer::SCPFileTransfer(const std::string& hostname, const std::string& username)
-	: target_hostname(hostname), target_username(username) {}
-
 std::string SCPFileTransfer::remote_path(const std::string& path) {
 	return target_username + "@" + target_hostname + ":" + path;
 }
+
+SCPFileTransfer::SCPFileTransfer(const std::string& hostname, const std::string& username,
+								 unsigned int port)
+	: target_hostname(hostname), target_username(username), port(port) {}
 
 bool SCPFileTransfer::ssh_test() {
 	return std::system(("ssh -T " + target_username + "@" + target_hostname).c_str());
 }
 
 int SCPFileTransfer::put(const std::string& local_path, const std::string& target_path) {
-	return std::system(
-		("scp -o ConnectTimeout=3 " + local_path + " " + remote_path(target_path)).c_str());
+	return std::system(("scp -o ConnectTimeout=3 -P " + std::to_string(port) + " " + local_path
+						+ " " + remote_path(target_path))
+						   .c_str());
 }
 
 int SCPFileTransfer::get(const std::string& local_path, const std::string& target_path) {
-	return std::system(
-		("scp -o ConnectTimeout=3 " + remote_path(target_path) + " " + local_path).c_str());
+	return std::system(("scp -o ConnectTimeout=3 -P " + std::to_string(port) + " "
+						+ remote_path(target_path) + " " + local_path)
+						   .c_str());
 }

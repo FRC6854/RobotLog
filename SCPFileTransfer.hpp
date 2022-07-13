@@ -25,10 +25,14 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 class SCPFileTransfer {
 private:
 	std::string target_hostname, target_username;
+	unsigned int port;
+
 	std::string remote_path(const std::string& path);
 
 public:
-	SCPFileTransfer(const std::string& hostname, const std::string& username);
+	SCPFileTransfer() = delete;
+	SCPFileTransfer(const std::string& hostname, const std::string& username,
+					unsigned int port = 22);
 	bool ssh_test();
 	int put(const std::string& local_path, const std::string& target_path);
 	int get(const std::string& local_path, const std::string& target_path);
