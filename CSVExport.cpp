@@ -20,7 +20,7 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 
-#include "csvexport.hpp"
+#include "CSVExport.hpp"
 
 CSVExport::CSVExport() : opened(false) {}
 

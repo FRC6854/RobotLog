@@ -23,7 +23,7 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <string>
 
-#include "pathexport.hpp"
+#include "PathExport.hpp"
 
 class CSVExport : public PathExport {
 private:

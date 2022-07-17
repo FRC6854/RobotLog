@@ -22,8 +22,8 @@
 #include <gtkmm.h>
 #include <iostream>
 
-#include "pathreader.hpp"
-#include "robotlog.hpp"
+#include "PathReader.hpp"
+#include "RobotLog.hpp"
 
 // initialize the window
 RobotLog::RobotLog() {

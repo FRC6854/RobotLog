@@ -22,11 +22,11 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
+#include "CSVExport.hpp"
+#include "PathExport.hpp"
+#include "PathReader.hpp"
+#include "RobotLog.hpp"
 #include "VikingInstructionExport.hpp"
-#include "csvexport.hpp"
-#include "pathexport.hpp"
-#include "pathreader.hpp"
-#include "robotlog.hpp"
 
 bool RobotLog::field_clicked(GdkEventButton *button_event) {
 	if ((button_event->y < field_cursor_top_limit)

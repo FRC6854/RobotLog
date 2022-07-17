@@ -21,7 +21,7 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <cstring>
 #include <gtkmm.h>
 
-#include "robotlog.hpp"
+#include "RobotLog.hpp"
 
 const char *gdk_backends_need_cursor_fix[] = {"GdkX11Display", "GdkWin32Display"};
 

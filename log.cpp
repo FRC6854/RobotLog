@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "robotlog.hpp"
+#include "RobotLog.hpp"
 
 void RobotLog::start_button_clicked() {
 	playing = true;

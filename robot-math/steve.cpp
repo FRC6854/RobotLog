@@ -21,7 +21,7 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <fstream>
 #include <iostream>
 
-#include "../pathreader.hpp"
+#include "../PathReader.hpp"
 
 #define ANGLEDEEP 5.4
 #define SPEEDFACTOR 8

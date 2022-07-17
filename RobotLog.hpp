@@ -23,8 +23,8 @@ along with RobotLog.  If not, see <https://www.gnu.org/licenses/>.
 #include <gtkmm.h>
 #include <vector>
 
-#include "pathexport.hpp"
-#include "pathreader.hpp"
+#include "PathExport.hpp"
+#include "PathReader.hpp"
 
 class RobotLog : public Gtk::Window {
 public:
@@ -44,8 +44,7 @@ protected:
 	std::vector<PathPoint> log_path;
 	std::vector<PathPoint> plan_path;
 
-	enum class OpMode
-	{
+	enum class OpMode {
 		planning,
 		logview
 	};
